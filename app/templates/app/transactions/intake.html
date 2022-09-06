@@ -1,0 +1,235 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Intake {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <main class="content">
+
+        {% include 'includes/navigation.html' %}
+
+    <!-- FORM START --><form>
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      {% if transactions is not True %}
+        {% for transaction in transactions %}
+            {% ifchanged %}
+                <button class="nav-link {% if transaction.sectionid == 1 %}active{% endif %}" id="nav-content{{ transaction.sectionid }}-tab" data-bs-toggle="tab" data-bs-target="#nav-content{{ transaction.sectionid }}" type="button" role="tab" aria-controls="nav-content{{ transaction.sectionid }}" aria-selected="true">{{ transaction.displayName }}</button>
+            {% endifchanged %}
+        {% endfor %}
+    {% endif %}
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    {% if transactions is not True %}
+        {% for transaction in transactions %}
+            {% ifchanged %}
+                <div class="tab-pane fade show {% if transaction.sectionid == 1 %}active{% endif %}" id="nav-content{{ transaction.sectionid }}" role="tabpanel" aria-labelledby="nav-content{{ transaction.sectionid }}">
+                    <!-- TAB CONTENT START -->
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <img class="img-fluid" src="{% static 'assets/images/img_section' %}{{ transaction.sectionid }}.png" alt="" />
+                        </div>
+                        <div class="col-md-9">
+
+                            {% for transaction2 in transactions %}
+                                {% if transaction.sectionid == transaction2.sectionid %}{% comment %}ONLY DISPLAY FORM FIELDS FOR CURRENT TAB{% endcomment %}
+                                    <label for="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" class="col-lg-8 col-form-label {{ transaction2.displayHTML }}">{{ transaction2.OPTION_DISPLAY }}</label>
+
+                                    {% if transaction2.type == 'text' %}
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" placeholder="{{ transaction2.toolTip }}">
+                                        </div>
+                                    {% elif transaction2.type == 'dropdown' %}
+                                        {% if transaction2.sectionid == 1 %}
+                                            <div class="col-sm-10">
+                                                <select class="form-select col-sm-10" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}">
+                                                <option value="1">BU - Devor Lab</option>
+                                                <option value="2">BU - Lewis Lab</option>
+                                                <option value="3">MGH Harvard - Polimeni Lab</option>
+                                                <option value="4">MGH Harvard - Sakadžić Lab</option>
+                                                <option value="5">MGH Harvard - Xin Lab</option>
+                                                <option value="6">UCSD - Kleinfeld Lab</option>
+                                                </select>
+                                            </div>
+                                        {% elif transaction2.sectionid == 2 %}
+                                            <div class="col-sm-10">
+                                                <select class="form-select col-sm-10" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}">
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                                <option value="Hermaphrodite">Hermaphrodite</option>
+                                                <option value="DoesNotApply">DoesNotApply</option>
+                                                </select>
+                                            </div>
+                                        {% endif %}
+                                    {% elif transaction2.type == 'textarea' %}
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control {{ transaction2.displayHTML }}" rows="5" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}"></textarea>
+                                        </div>
+                                    {% elif transaction2.type == 'radio' %}
+                                        <div class="col-sm-10">
+                                        <input type="radio" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}-y" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" value="Yes"><label for="y">Yes</label>&nbsp;
+                                        <input type="radio" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}-n" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" value="No"><label for="n">No</label>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+
+
+                <!-- TAB CONTENT END -->
+                </div>
+            {% endifchanged %}
+        {% endfor %}
+    {% endif %}
+</div>
+<!-- FORM END --></form>
+
+
+{##}
+{##}
+{##}
+{##}
+{##}
+{##}
+{#  <!-- MODAL DIALOG BOX - content2-info START -->#}
+{#  <div class="modal fade" id="content2-info" tabindex="-1" aria-labelledby="content2-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content2-info-label">Experimental Subject Info</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>species</li>#}
+{#            <li>genotype</li>#}
+{#            <li><a href="https://en.wikipedia.org/wiki/ISO_8601#Durations" target="_blank">age (days)</a> and weight#}
+{#            </li>#}
+{#            <li>other custom subject-specific fields</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content3-info START -->#}
+{#  <div class="modal fade" id="content3-info" tabindex="-1" aria-labelledby="content3-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content3-info-label">Behavior & Physiological Measurements</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>position and speed</li>#}
+{#            <li>choice and response time</li>#}
+{#            <li>video and audio</li>#}
+{#            <li>eye tracking</li>#}
+{#            <li>experiment-specific measures</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content4-info START -->#}
+{#  <div class="modal fade" id="content4-info" tabindex="-1" aria-labelledby="content4-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content4-info-label">Data Acquisition</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>device settings</li>#}
+{#            <li>filtering parameters</li>#}
+{#            <li>sampling rate</li>#}
+{#            <li>recording/imaging area</li>#}
+{#            <li>emerging technologies</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content5-info START -->#}
+{#  <div class="modal fade" id="content5-info" tabindex="-1" aria-labelledby="content5-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content5-info-label">Experimental Design</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>stimuli</li>#}
+{#            <li>environment</li>#}
+{#            <li>trial structure</li>#}
+{#            <li>epochs</li>#}
+{#            <li>perturbations</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content6-info START -->#}
+{#  <div class="modal fade" id="content6-info" tabindex="-1" aria-labelledby="content6-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content5-info-label">Neuronal Activity</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>extracellular electrophysiology</li>#}
+{#            <li>intracellular electrophysiology</li>#}
+{#            <li>optophysiology</li>#}
+{#            <li>pre-processed data</li>#}
+{#            <li>new data modalities</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+
+
+
+
+
+
+        {% include 'includes/footer.html' %}
+
+    </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
