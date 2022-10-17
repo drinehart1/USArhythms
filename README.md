@@ -15,6 +15,7 @@
     5. Create/edit local_settings.py to connect to local database
 
 ref: https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-22-04
+
 ref2: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-22-04
 
 ## Features

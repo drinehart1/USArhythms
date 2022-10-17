@@ -12,54 +12,88 @@
 
         {% include 'includes/navigation.html' %}
 
-    <!-- FORM START --><form>
+    <!-- FORM START --><form action="" method="post">{% csrf_token %}
 <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
       {% if transactions is not True %}
         {% for transaction in transactions %}
             {% ifchanged %}
-                <button class="nav-link {% if transaction.sectionid == 1 %}active{% endif %}" id="nav-content{{ transaction.sectionid }}-tab" data-bs-toggle="tab" data-bs-target="#nav-content{{ transaction.sectionid }}" type="button" role="tab" aria-controls="nav-content{{ transaction.sectionid }}" aria-selected="true">{{ transaction.displayName }}</button>
+                <button class="nav-link {% if transaction.SECTIONID == 1 %}active{% endif %}" id="nav-content{{ transaction.SECTIONID }}-tab" data-bs-toggle="tab" data-bs-target="#nav-content{{ transaction.SECTIONID }}" type="button" role="tab" aria-controls="nav-content{{ transaction.SECTIONID }}" aria-selected="true">{{ transaction.displayName }}</button>
             {% endifchanged %}
         {% endfor %}
     {% endif %}
   </div>
 </nav>
+    {% if action %}
+    <input class="submit-button" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Update" />
+    {% else %}
+    <input class="submit-button" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Save" />
+    {% endif %}
+{#         <a class="submit-button" href="{% url 'usarhythms.nameOfFunctionInViews' %}">Click here</a>#}
 <div class="tab-content" id="nav-tabContent">
     {% if transactions is not True %}
         {% for transaction in transactions %}
             {% ifchanged %}
-                <div class="tab-pane fade show {% if transaction.sectionid == 1 %}active{% endif %}" id="nav-content{{ transaction.sectionid }}" role="tabpanel" aria-labelledby="nav-content{{ transaction.sectionid }}">
+                <div class="tab-pane fade show {% if transaction.SECTIONID == 1 %}active{% endif %}" id="nav-content{{ transaction.SECTIONID }}" role="tabpanel" aria-labelledby="nav-content{{ transaction.SECTIONID }}">
                     <!-- TAB CONTENT START -->
                     <div class="container">
                       <div class="row">
                         <div class="col-md-3">
-                          <img class="img-fluid" src="{% static 'assets/images/img_section' %}{{ transaction.sectionid }}.png" alt="" />
+                          <img class="img-fluid" src="{% static 'assets/images/img_section' %}{{ transaction.SECTIONID }}.png" alt="" />
                         </div>
                         <div class="col-md-9">
 
                             {% for transaction2 in transactions %}
-                                {% if transaction.sectionid == transaction2.sectionid %}{% comment %}ONLY DISPLAY FORM FIELDS FOR CURRENT TAB{% endcomment %}
-                                    <label for="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" class="col-lg-8 col-form-label {{ transaction2.displayHTML }}">{{ transaction2.OPTION_DISPLAY }}</label>
+                                {% if transaction.SECTIONID == transaction2.SECTIONID %}{% comment %}ONLY DISPLAY FORM FIELDS FOR CURRENT TAB{% endcomment %}
+                                    <label for="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" class="col-lg-8 col-form-label {{ transaction2.displayHTML }}">{{ transaction2.OPTION_DISPLAY }}</label>
 
                                     {% if transaction2.type == 'text' %}
                                         <div class="col-sm-10">
-                                          <input type="text" class="form-control" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" placeholder="{{ transaction2.toolTip }}">
+                                        {%  if transaction2.optionid == 2 %}
+                                            <input value="{{ request.user }} ({{ request.user.id }})" disabled type="text" class="form-control" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" placeholder="{{ transaction2.toolTip }}">
+                                        {% else %}
+                                          <input type="text" class="form-control" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" placeholder="{{ transaction2.toolTip }}" value="{{ transaction2.DEFAULT_VALUE }}">
+                                        {% endif %}
                                         </div>
                                     {% elif transaction2.type == 'dropdown' %}
-                                        {% if transaction2.sectionid == 1 %}
+                                        {% if transaction2.SECTIONID == 1 %}
                                             <div class="col-sm-10">
-                                                <select class="form-select col-sm-10" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}">
-                                                <option value="1">BU - Devor Lab</option>
-                                                <option value="2">BU - Lewis Lab</option>
-                                                <option value="3">MGH Harvard - Polimeni Lab</option>
-                                                <option value="4">MGH Harvard - Sakadžić Lab</option>
-                                                <option value="5">MGH Harvard - Xin Lab</option>
-                                                <option value="6">UCSD - Kleinfeld Lab</option>
+                                                <select class="form-select col-sm-10" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" {% if transaction2.DEFAULT_VALUE %}disabled{% endif %}>
+                                                {%  if transaction2.DEFAULT_VALUE == '1' %}
+                                                    <option value="1" selected>UCSD - Kleinfeld Lab</option>
+                                                {% else %}
+                                                    <option value="1">UCSD - Kleinfeld Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '2' %}
+                                                    <option value="2" selected>BU - Devor Lab</option>
+                                                {%  else %}
+                                                    <option value="2">BU - Devor Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '3' %}
+                                                    <option value="3" selected>BU - Lewis Lab</option>
+                                                {%  else %}
+                                                    <option value="3">BU - Lewis Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '4' %}
+                                                    <option value="4" selected>MGH Harvard - Polimeni Lab</option>
+                                                {%  else %}
+                                                    <option value="4">MGH Harvard - Polimeni Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '5' %}
+                                                    <option value="5" selected>MGH Harvard - Sakadžić Lab</option>
+                                                {%  else %}
+                                                    <option value="5">MGH Harvard - Sakadžić Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '6' %}
+                                                    <option value="6" selected>MGH Harvard - Xin Lab</option>
+                                                {%  else %}
+                                                    <option value="6">MGH Harvard - Xin Lab</option>
+                                                {% endif %}
                                                 </select>
                                             </div>
-                                        {% elif transaction2.sectionid == 2 %}
+                                        {% elif transaction2.SECTIONID == 2 %}
                                             <div class="col-sm-10">
-                                                <select class="form-select col-sm-10" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}">
+                                                <select class="form-select col-sm-10" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}">
                                                 <option value="M">Male</option>
                                                 <option value="F">Female</option>
                                                 <option value="Hermaphrodite">Hermaphrodite</option>
@@ -69,12 +103,12 @@
                                         {% endif %}
                                     {% elif transaction2.type == 'textarea' %}
                                         <div class="col-sm-10">
-                                            <textarea class="form-control {{ transaction2.displayHTML }}" rows="5" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}"></textarea>
+                                            <textarea class="form-control" rows="5" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}">{{ transaction2.DEFAULT_VALUE }}</textarea>
                                         </div>
                                     {% elif transaction2.type == 'radio' %}
                                         <div class="col-sm-10">
-                                        <input type="radio" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}-y" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" value="Yes"><label for="y">Yes</label>&nbsp;
-                                        <input type="radio" id="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}-n" name="content{{ transaction2.sectionid }}-{{ transaction2.optionid }}" value="No"><label for="n">No</label>
+                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-y" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" value="Yes"><label for="y">Yes</label>&nbsp;
+                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-n" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" value="No"><label for="n">No</label>
                                         </div>
                                     {% endif %}
                                 {% endif %}
