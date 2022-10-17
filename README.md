@@ -2,6 +2,10 @@
 
 ***Centralised Portal*** aims to warehouse meta-data about shared research, including indexing, searching and pointers to code/visualization tools
 
+***Production Deployments***: 
+- https://usarhythms.ucsd.edu/ (USArhythms U19 Portal)
+- https://highandlow.dk.ucsd.edu/ (aABC U19 Portal)
+
 ## Steps for setup:
 
     1. Create VM running NGINX
@@ -20,6 +24,13 @@ ref2: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-
 - Permits user login to data sharing portal
 - Provides user input form for experimental meta-data
 - Provides user search form for locating previously-entered data
+
+
+## Future goals
+
+---
+- Add basic visualizations for common data formats
+- Add API for external/automated experimental data additions
 
 ## Contribute
 
