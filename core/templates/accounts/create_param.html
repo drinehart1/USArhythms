@@ -1,0 +1,366 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Intake {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <main class="content">
+
+        {% include 'includes/navigation.html' %}
+
+    <!-- FORM START --><form id="form_param" action="/store_param/" method="post">{% csrf_token %}
+    {% with name="edit_paramid" %}
+        <input type="hidden" name="edit_paramid" value="{{ edit_paramid }}">
+    {% endwith %}
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      {% if transactions is not True %}
+        {% for transaction in transactions %}
+            {% ifchanged %}
+                <button class="nav-link {% if transaction.SECTIONID == 1 %}active{% endif %}" id="nav-content{{ transaction.SECTIONID }}-tab" data-bs-toggle="tab" data-bs-target="#nav-content{{ transaction.SECTIONID }}" type="button" role="tab" aria-controls="nav-content{{ transaction.SECTIONID }}" aria-selected="true">{{ transaction.displayName }}</button>
+            {% endifchanged %}
+        {% endfor %}
+    {% endif %}
+  </div>
+</nav>
+    {% if action %}
+    <input class="submit-button" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Update" />
+    {% else %}
+    <input class="submit-button" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Save" />
+    {% endif %}
+    <input type="checkbox" id="chkbox_store_user_pref" value="save"><label for="save"> Store selections as defaults</label><br />
+    <input type="checkbox" id="chkbox_tmp" value="save"><label for="save"> store trigger</label><br />
+<div class="tab-content" id="nav-tabContent">
+    {% if transactions is not True %}
+        {% for transaction in transactions %}
+            {% ifchanged %}
+                <div class="tab-pane fade show {% if transaction.SECTIONID == 1 %}active{% endif %}" id="nav-content{{ transaction.SECTIONID }}" role="tabpanel" aria-labelledby="nav-content{{ transaction.SECTIONID }}">
+                    <!-- TAB CONTENT START -->
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <img class="img-fluid" src="{% static 'assets/images/img_section' %}{{ transaction.SECTIONID }}.png" alt="" />
+                        </div>
+                        <div class="col-md-9">
+                            {% comment %}
+                            FIRST ITEM IS METHOD, IF EXISTS
+                            DISABLE IF EDIT MODE
+                            {% endcomment %}
+                            {% if methods is not True %}
+                                {% for method in methods %}
+                                    {% ifchanged %}
+                                        {% if method.FK_section ==  transaction.SECTIONID %}
+                                            <label for="method-content{{ transaction2.SECTIONID }}-{{ method.FK_section }}" class="col-lg-8 col-form-label">Method</label>
+                                            <div class="col-sm-10">
+                                            <select class="form-select col-sm-10" name="method-content{{ transaction2.SECTIONID }}-{{ method.FK_section }}" id="method-content{{ transaction2.SECTIONID }}-{{ method.FK_section }}">
+                                            {% for method2 in methods %}
+                                                {% if method2.FK_section ==  transaction.SECTIONID %}
+                                                    <option value="{{ method2.methodid }}">{{ method2.methodhelp }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                            </select>
+                                            </div>
+                                        {% endif %}
+                                    {% endifchanged %}
+                                {% endfor %}
+                            {% endif %}
+
+
+                            {% for transaction2 in transactions %}
+                                {% if transaction.SECTIONID == transaction2.SECTIONID %}{% comment %}ONLY DISPLAY FORM FIELDS FOR CURRENT TAB{% endcomment %}
+                                    <label for="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" class="col-lg-8 col-form-label {{ transaction2.displayHTML }}">{{ transaction2.OPTION_DISPLAY }}</label>
+
+                                    {% if transaction2.type == 'text' %}
+                                        <div class="col-sm-10">
+                                        {%  if transaction2.optionid == 2 %}
+                                            <input value="{{ request.user }} ({{ request.user.id }})" disabled type="text" class="form-control" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" placeholder="{{ transaction2.toolTip }}">
+                                        {% else %}
+                                            <input type="text" class="form-control" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" placeholder="{{ transaction2.toolTip }}" value="{{ transaction2.DEFAULT_VALUE }}">
+                                        {% endif %}
+                                        </div>
+                                    {% elif transaction2.type == 'dropdown' %}
+                                        {% if transaction2.SECTIONID == 1 %}
+                                            <div class="col-sm-10">
+                                                <select class="form-select col-sm-10" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" {% if transaction2.DEFAULT_VALUE %}disabled{% endif %}>
+                                                {%  if transaction2.DEFAULT_VALUE == '1' %}
+                                                    <option value="1" selected>UCSD - Kleinfeld Lab</option>
+                                                {% else %}
+                                                    <option value="1">UCSD - Kleinfeld Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '2' %}
+                                                    <option value="2" selected>BU - Devor Lab</option>
+                                                {%  else %}
+                                                    <option value="2">BU - Devor Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '3' %}
+                                                    <option value="3" selected>BU - Lewis Lab</option>
+                                                {%  else %}
+                                                    <option value="3">BU - Lewis Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '4' %}
+                                                    <option value="4" selected>MGH Harvard - Polimeni Lab</option>
+                                                {%  else %}
+                                                    <option value="4">MGH Harvard - Polimeni Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '5' %}
+                                                    <option value="5" selected>MGH Harvard - Sakadžić Lab</option>
+                                                {%  else %}
+                                                    <option value="5">MGH Harvard - Sakadžić Lab</option>
+                                                {% endif %}
+                                                {%  if transaction2.DEFAULT_VALUE == '6' %}
+                                                    <option value="6" selected>MGH Harvard - Xin Lab</option>
+                                                {%  else %}
+                                                    <option value="6">MGH Harvard - Xin Lab</option>
+                                                {% endif %}
+                                                </select>
+                                            </div>
+                                        {% elif transaction2.SECTIONID == 2 %}
+                                            <div class="col-sm-10">
+                                                <select class="form-select col-sm-10" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}">
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                                <option value="Hermaphrodite">Hermaphrodite</option>
+                                                <option value="DoesNotApply">DoesNotApply</option>
+                                                </select>
+                                            </div>
+                                        {% endif %}
+                                    {% elif transaction2.type == 'textarea' %}
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" rows="5" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}">{{ transaction2.DEFAULT_VALUE }}</textarea>
+                                        </div>
+                                    {% elif transaction2.type == 'radio' %}
+                                        <div class="col-sm-10">
+                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-y" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" value="Yes"><label for="y">Yes</label>&nbsp;
+                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-n" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" value="No"><label for="n">No</label>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+
+
+                <!-- TAB CONTENT END -->
+                </div>
+            {% endifchanged %}
+        {% endfor %}
+    {% endif %}
+</div>
+<!-- FORM END --></form>
+
+
+{##}
+{##}
+{##}
+{##}
+{##}
+{##}
+{#  <!-- MODAL DIALOG BOX - content2-info START -->#}
+{#  <div class="modal fade" id="content2-info" tabindex="-1" aria-labelledby="content2-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content2-info-label">Experimental Subject Info</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>species</li>#}
+{#            <li>genotype</li>#}
+{#            <li><a href="https://en.wikipedia.org/wiki/ISO_8601#Durations" target="_blank">age (days)</a> and weight#}
+{#            </li>#}
+{#            <li>other custom subject-specific fields</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content3-info START -->#}
+{#  <div class="modal fade" id="content3-info" tabindex="-1" aria-labelledby="content3-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content3-info-label">Behavior & Physiological Measurements</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>position and speed</li>#}
+{#            <li>choice and response time</li>#}
+{#            <li>video and audio</li>#}
+{#            <li>eye tracking</li>#}
+{#            <li>experiment-specific measures</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content4-info START -->#}
+{#  <div class="modal fade" id="content4-info" tabindex="-1" aria-labelledby="content4-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content4-info-label">Data Acquisition</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>device settings</li>#}
+{#            <li>filtering parameters</li>#}
+{#            <li>sampling rate</li>#}
+{#            <li>recording/imaging area</li>#}
+{#            <li>emerging technologies</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content5-info START -->#}
+{#  <div class="modal fade" id="content5-info" tabindex="-1" aria-labelledby="content5-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content5-info-label">Experimental Design</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>stimuli</li>#}
+{#            <li>environment</li>#}
+{#            <li>trial structure</li>#}
+{#            <li>epochs</li>#}
+{#            <li>perturbations</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+{#  <!-- MODAL DIALOG BOX - content6-info START -->#}
+{#  <div class="modal fade" id="content6-info" tabindex="-1" aria-labelledby="content6-info-label" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#      <div class="modal-content">#}
+{#        <div class="modal-header">#}
+{#          <h5 class="modal-title" id="content5-info-label">Neuronal Activity</h5>#}
+{#          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#          Information such as: <ul>#}
+{#            <li>extracellular electrophysiology</li>#}
+{#            <li>intracellular electrophysiology</li>#}
+{#            <li>optophysiology</li>#}
+{#            <li>pre-processed data</li>#}
+{#            <li>new data modalities</li>#}
+{#          </ul>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <!-- MODAL DIALOG BOX END -->#}
+
+
+
+
+
+
+        {% include 'includes/footer.html' %}
+
+    </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+    <script type="application/javascript" src="{% static 'app_assets/js/pouchdb-7.3.0.min.js' %}"></script>
+    <script>
+        //ACTIONS ASSOCIATED WITH USER PREFERENCE STORAGE (LOCAL IN-BROWSER DEFAULTS)
+        const checkbox = document.getElementById('chkbox_store_user_pref')
+
+        //DEFAULT CHECKED (NEW PARAMETER SETS WILL STORE RESPONSES AS DEFAULTS)
+        checkbox.checked = true;
+
+        checkbox.addEventListener('change', (event) => {
+          if (event.currentTarget.checked) {
+            alert('checked');
+          } else {
+            alert('not checked');
+          }
+        })
+
+        const checkbox1 = document.getElementById('chkbox_tmp')
+        checkbox1.addEventListener('change', (event) => {
+          if (event.currentTarget.checked) {
+              const form = document.getElementById('form_param')
+              Array.from(form.elements).forEach(element => {
+                  let key = element.name;
+                  let val = element.value;
+                  let aryKey = key.split('-');
+                  let content_section = parseInt(aryKey[0].match(/\d+/))
+                  if (content_section > 2 && val != ''){//ONLY CAPTURE BEHAVIOR -> NEURONAL ACTIVITY WITH VALUE
+                    console.log(key, val);
+                    addLocalParam(key, val);
+                  }
+                });
+          } else {
+            alert('not checked');
+          }
+        })
+
+        //POUCHDB FUNCTIONS
+        var db = new PouchDB('local_pref');
+
+        //STORE LOCAL DEFAULTS
+        function addLocalParam(key, value) {
+            var record = {
+                _id: new Date().toISOString(),
+                field: key,
+                value: value
+            };
+            db.put(record, function callback(err, result){
+                if (!err) {
+                  console.log('Successfully stored');
+                }
+            });
+        }
+
+        // TRIGGERS AFTER PAGE IS FULLY LOADED
+        window.addEventListener("load", () => {
+          const queryString = window.location.search;
+          const urlParams = new URLSearchParams(queryString);
+          const id = urlParams.get('id');
+
+          if (!urlParams.has('id')) {
+              //OVERRIDE DEFAULT VALUES [FROM DB] IF LOCAL PREF SELECTED (ONLY ON NEW PARAMETER SETS)
+              db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+                console.log("reading local");
+                console.log(doc.rows);
+              });
+          }
+
+        });
+    </script>
+
+{% endblock javascripts %}

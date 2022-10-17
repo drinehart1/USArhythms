@@ -1,0 +1,71 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <!-- Primary Meta Tags -->
+    <title>
+        USArhythms Data Sharing Portal - {% block title %}{% endblock %}
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="title" content="USArhythms Data Sharing Portal">
+    <meta name="author" content="Duane Rinehart @ Kleinfeld Lab @ UCSD" />
+    <meta name="copyright" content="&copy; 2022" />
+
+    <!-- Fontawesome -->
+    <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+    <!-- Notyf -->
+    <link type="text/css" href="/static/assets/vendor/notyf/notyf.min.css" rel="stylesheet">
+
+    <!-- Volt CSS -->
+    <link type="text/css" href="/static/assets/css/volt.css" rel="stylesheet">
+
+    <!-- OVERIDES FOR INTAKE FORM -->
+    <link type="text/css" href="/static/assets/css/page.css" rel="stylesheet">
+
+    <!-- Specific Page CSS goes HERE  -->
+    {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-md-none">
+    <a class="navbar-brand mr-lg-5" href="/">
+        <img class="navbar-brand-dark" src="/static/assets/img/brand/light.svg" alt=""/> <img
+            class="navbar-brand-light" src="/static/assets/img/brand/dark.svg" alt=""/>
+    </a>
+    <div class="d-flex align-items-center">
+        <button class="navbar-toggler d-md-none collapsed" type="button" data-toggle="collapse"
+                data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<div class="container-fluid bg-soft">
+    <div class="row">
+        <div class="col-12">
+
+            {% include 'includes/sidebar.html' %}
+
+            {% block content %}{% endblock content %}
+
+        </div>
+    </div>
+</div>
+
+{% include 'includes/scripts.html' %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>
