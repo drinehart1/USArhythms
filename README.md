@@ -13,6 +13,7 @@
     3. Setup gunicorn (see ref below for Ubuntu 22.04)
     4. Point DNS A record to web server and add TLS certificate (see ref2 below)
     5. Create/edit local_settings.py to connect to local database
+    6. Modify core/settings.py for current domain
 
 ref: https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-22-04
 

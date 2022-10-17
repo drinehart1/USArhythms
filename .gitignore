@@ -14,6 +14,7 @@ __pycache__/
 # venv
 env
 venv
+/.env
 
 # other
 .DS_Store
@@ -26,3 +27,4 @@ staticfiles/*
 .vscode/symbols.json
 /local_settings.py
 /app/static/data/
+

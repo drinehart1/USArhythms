@@ -16,7 +16,7 @@ DEBUG = config('DEBUG', default=True)
 
 # load production server from .env
 ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', config('SERVER', default='127.0.0.1')]
-CSRF_TRUSTED_ORIGINS=['http://usarhythms.ucsd.edu', 'https://usarhythms.ucsd.edu']
+CSRF_TRUSTED_ORIGINS=['http://usarhythms.ucsd.edu', 'https://usarhythms.ucsd.edu', 'http://highandlow.dk.ucsd.edu/', 'https://highandlow.dk.ucsd.edu/']
 
 # Application definition
 
