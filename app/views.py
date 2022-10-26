@@ -123,7 +123,7 @@ def StoreParam(request):
                 if formvar == 'edit_paramid':
                     base_param_id = request.POST['edit_paramid']
 
-        if base_param_id:  # UPDATE EXISTING PARAMETER SET
+        if base_param_id != 'None':  # UPDATE EXISTING PARAMETER SET
             #PARAM_stored : table holding primary indexed parametersets
             #PARAM_stored_values : table holding all parameterset values
 
@@ -175,13 +175,14 @@ def CreateParam(request):
     if requested_param_id:
         # VIEW/STORED VALUES (OVERRIDE) OF REQUESTED PARAMETER SET
         # NOTE: DJANGO LIMITATION REQUIRES RESULTS TO INCLUDE PRIMARY KEY OF BASE TABLE (HENCE '*' IN SELECT STATEMENT)
+        # ADDED DEFAULT=KLEINFELD LAB IF FK_performance_lab IS NULL
         param_sql = f'''
                 SELECT *, a.sectionid AS SECTIONID, b.ordering AS ORDERING, b.displayName AS OPTION_DISPLAY, optionid AS OPTIONID, b.toolTip AS TOOLTIP, b.type AS FIELDTYPE, b.method AS DEFAULT_METHOD, b.displayHTML AS DISPLAY_HTML, c.methodname AS METHOD_NAME,
                     CASE
                     WHEN OPTIONID = '1'
                         THEN (SELECT FK_session_id FROM PARAM_stored WHERE id={requested_param_id})
                     WHEN OPTIONID = '3'
-                        THEN (SELECT FK_performance_lab FROM auth_user WHERE id={param_researcher_id})
+                        THEN (SELECT IFNULL(FK_performance_lab, "1") FROM auth_user WHERE id={param_researcher_id})
                     WHEN OPTIONID = '4'
                      THEN (SELECT publication_name FROM PARAM_stored WHERE id={requested_param_id})
                     WHEN OPTIONID = '5'
