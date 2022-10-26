@@ -28,12 +28,11 @@
   </div>
 </nav>
     {% if action %}
-    <input class="submit-button" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Update" />
+    <input class="submit-button" id="btnsubmit" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Update" />
     {% else %}
-    <input class="submit-button" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Save" />
+    <input class="submit-button" id="btnsubmit" style="color: #fff; background-color: #007bff; border-color: #007bff;" type="submit" value="Save" />
     {% endif %}
-    <input type="checkbox" id="chkbox_store_user_pref" value="save"><label for="save"> Store selections as defaults</label><br />
-    <input type="checkbox" id="chkbox_tmp" value="save"><label for="save"> store trigger</label><br />
+    <input type="checkbox" id="chkbox_store_user_pref" value="save"><label for="save"> store as default</label><br />
 <div class="tab-content" id="nav-tabContent">
     {% if transactions is not True %}
         {% for transaction in transactions %}
@@ -134,8 +133,8 @@
                                         </div>
                                     {% elif transaction2.type == 'radio' %}
                                         <div class="col-sm-10">
-                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-y" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" value="Yes"><label for="y">Yes</label>&nbsp;
-                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-n" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}" value="No"><label for="n">No</label>
+                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-y" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}"><label for="y">Yes</label>&nbsp;
+                                        <input type="radio" id="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}-n" name="content{{ transaction2.SECTIONID }}-{{ transaction2.optionid }}"><label for="n">No</label>
                                         </div>
                                     {% endif %}
                                 {% endif %}
@@ -294,73 +293,7 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+    <script>"use strict";</script>
     <script type="application/javascript" src="{% static 'app_assets/js/pouchdb-7.3.0.min.js' %}"></script>
-    <script>
-        //ACTIONS ASSOCIATED WITH USER PREFERENCE STORAGE (LOCAL IN-BROWSER DEFAULTS)
-        const checkbox = document.getElementById('chkbox_store_user_pref')
-
-        //DEFAULT CHECKED (NEW PARAMETER SETS WILL STORE RESPONSES AS DEFAULTS)
-        checkbox.checked = true;
-
-        checkbox.addEventListener('change', (event) => {
-          if (event.currentTarget.checked) {
-            alert('checked');
-          } else {
-            alert('not checked');
-          }
-        })
-
-        const checkbox1 = document.getElementById('chkbox_tmp')
-        checkbox1.addEventListener('change', (event) => {
-          if (event.currentTarget.checked) {
-              const form = document.getElementById('form_param')
-              Array.from(form.elements).forEach(element => {
-                  let key = element.name;
-                  let val = element.value;
-                  let aryKey = key.split('-');
-                  let content_section = parseInt(aryKey[0].match(/\d+/))
-                  if (content_section > 2 && val != ''){//ONLY CAPTURE BEHAVIOR -> NEURONAL ACTIVITY WITH VALUE
-                    console.log(key, val);
-                    addLocalParam(key, val);
-                  }
-                });
-          } else {
-            alert('not checked');
-          }
-        })
-
-        //POUCHDB FUNCTIONS
-        var db = new PouchDB('local_pref');
-
-        //STORE LOCAL DEFAULTS
-        function addLocalParam(key, value) {
-            var record = {
-                _id: new Date().toISOString(),
-                field: key,
-                value: value
-            };
-            db.put(record, function callback(err, result){
-                if (!err) {
-                  console.log('Successfully stored');
-                }
-            });
-        }
-
-        // TRIGGERS AFTER PAGE IS FULLY LOADED
-        window.addEventListener("load", () => {
-          const queryString = window.location.search;
-          const urlParams = new URLSearchParams(queryString);
-          const id = urlParams.get('id');
-
-          if (!urlParams.has('id')) {
-              //OVERRIDE DEFAULT VALUES [FROM DB] IF LOCAL PREF SELECTED (ONLY ON NEW PARAMETER SETS)
-              db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-                console.log("reading local");
-                console.log(doc.rows);
-              });
-          }
-
-        });
-    </script>
-
+    <script type="application/javascript" src="{% static 'app_assets/js/param_methods.js' %}"></script>
 {% endblock javascripts %}
